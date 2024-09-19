@@ -1,0 +1,25 @@
+@local=http://localhost:3900/Api 
+
+###
+POST {{local}}/users
+Content-Type: application/json
+
+{
+    "name":"neveen",
+    "email":"neveen@gmail.com",
+    "password":"Aa123456789",
+    "biz":true
+}
+
+### Authenticate
+POST {{local}}/auth 
+Content-Type: application/json
+
+{
+    "email":"neveen@gmail.com",
+    "password":"Aa123456789"
+}
+
+### Authorize
+GET {{local}}/users/me 
+x-auth-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmVhYWQ1ZTNhYjE4MmE3OTBiMjVjNTEiLCJiaXoiOnRydWUsImlhdCI6MTcyNjY1NjM5NX0.GcOr1XfMg1_sUFXWm1ARfAaw0lowJgGNhvJQZ9wrLeY
