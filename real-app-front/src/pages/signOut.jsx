@@ -1,18 +1,25 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/auth.contex";
 import { useEffect } from "react";
+import { useAuth } from "../contexts/auth.context";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const SignOut = ({ redirect = "/" }) => {
-  const navigate = useNavigate();
+function SignOut() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    logout();
-
-    navigate(redirect);
-  }, [navigate, logout, redirect]);
-
-  return null;
-};
+    const logoutFetch = async () => {
+      try {
+        await logout();
+        navigate("/");
+        toast.success("sign out succesfull");
+      } catch (error) {
+        console.log("error logging out ", error);
+        toast.error("sign out was unsuccessful");
+      }
+    };
+    logoutFetch();
+  }, []);
+}
 
 export default SignOut;

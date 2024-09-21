@@ -1,76 +1,85 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import About from "./pages/about";
 import Footer from "./components/footer";
+import Header from "./components/header";
+import About from "./pages/about";
 import Home from "./pages/home";
-import NavBar from "./components/navbar";
-import SignUp from "./pages/signUp";
 import SignIn from "./pages/signIn";
+import SignUp from "./pages/signUp";
 import SignOut from "./pages/signOut";
-import SignUpBiz from "./pages/signUpBiz";
-import MyCards from "./pages/myCards";
-import ProtectedRoute from "./components/common/protectedRoute";
-import cardsService from "./services/cardService";
-import CardsCreate from "./pages/cardsCreate";
-import CardDelete from "./pages/cardDelete";
-import CardsEdit from "./pages/cardsEdit";
-
-cardsService.getAll().then(console.log);
+import { useMode } from "./contexts/mode.context";
+import { useEffect } from "react";
+import Favorites from "./pages/favorites";
+import Mycards from "./pages/mycards";
+import ReferredCard from "./pages/ReferredCard";
+import { useAuth } from "./contexts/auth.context";
+import NewCard from "./pages/NewCard";
+import EditCard from "./pages/editcard";
+import EditUser from "./pages/editUser";
+import Crm from "./pages/Crm";
+import ReferredUser from "./pages/referredUser";
+import ProtectedRoute from "./components/common/protectedRoutes";
 
 function App() {
+  const { theme } = useMode();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    document.body.setAttribute(
+      "data-bs-theme",
+      theme === "dark" ? "dark" : "light"
+    );
+  }, [theme]);
+
   return (
-    <div className="app d-flex flex-column min-vh-100">
-      <header className="pb-3">
-        <NavBar />
-      </header>
-      <main className="flex-fill container">
+    <div className="app min-vh-100 d-flex flex-column gap-2 ">
+      <Header />
+      <main className="flex-fill">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-out" element={<SignOut />} />
+          <Route path="/favourites" element={<Favorites />} />
           <Route
-            path="/my-cards"
+            path="/mycards"
             element={
               <ProtectedRoute onlyBiz>
-                <MyCards />
+                <Mycards />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/referredCard/:id" element={<ReferredCard />} />
+          <Route
+            path="/newCard"
+            element={
+              <ProtectedRoute onlyBiz>
+                <NewCard />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/create-card"
+            path="/edit/:id"
             element={
               <ProtectedRoute onlyBiz>
-                <CardsCreate />
+                <EditCard />
               </ProtectedRoute>
             }
           />
+          <Route path="/user/:id" element={<EditUser />} />
           <Route
-            path="/my-cards/delete/:id"
+            path="/CRM"
             element={
-              <ProtectedRoute onlyBiz>
-                <CardDelete />
+              <ProtectedRoute onlyAdmin>
+                <Crm />
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/my-cards/edit/:id"
-            element={
-              <ProtectedRoute onlyBiz>
-                <CardsEdit />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/sign-in" element={<SignIn redirect="/" />} />
-          <Route path="/sign-up" element={<SignUp redirect="/sign-in" />} />
-          <Route
-            path="/sign-up-biz"
-            element={<SignUpBiz redirect="/my-cards" />}
-          />
-          <Route path="/sign-out" element={<SignOut />} redirect="/" />
+          <Route path="/referredUser/:id" element={<ReferredUser />} />
         </Routes>
       </main>
-      <footer>
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 }

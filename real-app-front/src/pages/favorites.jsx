@@ -1,56 +1,89 @@
 import Input from "../components/common/input";
 import PageHeader from "../components/common/pageHeader";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/auth.context";
-import Checkbox from "../components/common/checkbox";
-import useSignUp from "../components/hooks/useSignUp";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { getCard } from "../services/cardsService";
+import useEditCard from "../components/hooks/useEditCard";
+function EditCard() {
+  const navigate = useNavigate();
+  const [fetchedCard, setfetchedCard] = useState({});
+  const { id } = useParams();
 
-function SignUp() {
-  const { user } = useAuth();
-  const { form, serverError } = useSignUp();
+  const { form, serverError } = useEditCard();
 
-  if (user) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    const fetchCard = async () => {
+      try {
+        const data = await getCard(id);
+        setfetchedCard(data);
+        form.setValues({
+          title: data.title || "",
+          subtitle: data.subtitle || "",
+          description: data.description || "",
+          phone: data.phone || "",
+          email: data.email || "",
+
+          image: {
+            url: data.image?.url || "",
+            alt: data.image?.alt || "",
+          },
+          address: {
+            state: data.address?.state || "",
+            country: data.address?.country || "",
+            city: data.address?.city || "",
+            street: data.address?.street || "",
+            houseNumber: data.address?.houseNumber || "",
+            zip: data.address?.zip || "",
+          },
+        });
+      } catch (error) {
+        console.log("error fetching card", error);
+        if (error.response?.status === 400) {
+          setServerError(error.response.data);
+        }
+      }
+    };
+    fetchCard();
+  }, [id]);
+  const handleCancel = () => {
+    navigate(-1);
+    toast.info("Action Cancelled");
+  };
   return (
     <div className="container">
-      <PageHeader
-        title="Sign Up"
-        description="Open a new account ,we would love to have you with us"
-      />
-
+      <PageHeader title="Edit Card" />
+      {serverError && <div className="alert alert-danger">{serverError}</div>}
       <form
-        className="d-flex flex-wrap gap-5 m-5 text-justify "
         onSubmit={form.handleSubmit}
+        className="d-flex flex-wrap gap-5 m-5 text-justify "
         noValidate
         autoComplete="off"
       >
-        {serverError && (
-          <div className="alert alert-danger ">{serverError}</div>
-        )}
-
         <Input
-          {...form.getFieldProps("name.first")}
+          {...form.getFieldProps("title")}
           type="text"
-          label="First Name"
-          placeholder="First Name"
+          label="Title"
+          placeholder="Title"
           required
-          error={form.touched.name?.first && form.errors["name.first"]}
+          error={form.touched.title && form.errors.title}
         />
         <Input
-          {...form.getFieldProps("name.middle")}
+          {...form.getFieldProps("subtitle")}
           type="text"
-          label="Middle Name"
-          placeholder="Middle Name"
-          error={form.touched.name?.middle && form.errors["name.middle"]}
+          required
+          label="Subtitle"
+          placeholder="Subtitle"
+          error={form.touched.subtitle && form.errors.subtitle}
         />
         <Input
-          {...form.getFieldProps("name.last")}
+          {...form.getFieldProps("description")}
           type="text"
-          label="Last Name"
-          placeholder="Last Name"
+          label="Description"
+          placeholder="Description"
           required
-          error={form.touched.name?.last && form.errors["name.last"]}
+          error={form.touched.description && form.errors.description}
         />
         <Input
           {...form.getFieldProps("phone")}
@@ -67,13 +100,7 @@ function SignUp() {
           required
           error={form.touched.email && form.errors.email}
         />
-        <Input
-          {...form.getFieldProps("password")}
-          type="password"
-          label="Password"
-          required
-          error={form.touched.password && form.errors.password}
-        />
+        <Input {...form.getFieldProps("web")} type="text" label="Web" />
         <Input
           {...form.getFieldProps("image.url")}
           type="text"
@@ -140,23 +167,22 @@ function SignUp() {
           placeholder="zip"
           error={form.touched.address?.zip && form.errors["address.zip"]}
         />
-        <Checkbox
-          {...form.getFieldProps("isBusiness")}
-          type="checkbox"
-          label="Sign up as Business"
-        />
 
-        <div className="my-2 p-3 mt-3">
+        <div className="my-2 p-3">
+          <button type="submit" className="btn btn-success m-3 fs-4">
+            Submit
+          </button>
+
           <button
-            type="submit"
-            disabled={!form.isValid}
-            className="btn btn-primary fs-4 "
+            type="button"
+            onClick={handleCancel}
+            className="btn btn-danger m-3 fs-4"
           >
-            Sign Up
+            Cancel
           </button>
         </div>
       </form>
     </div>
   );
 }
-export default SignUp;
+export default EditCard;

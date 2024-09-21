@@ -1,48 +1,85 @@
-import { createContext, useContext, useState } from "react";
-import usersService from "../services/usersService";
+import { useAuth } from "../contexts/auth.context";
+import httpService, { setDefaultCommonHeaders } from "./httpService";
+import { jwtDecode } from "jwt-decode";
 
-const fn_error_context_must_be_used = () => {
-  throw new Error("must use authContext provider for consumer to work");
-};
+const TOKEN_KEY = "token";
 
-export const authContext = createContext({
-  user: null,
-  login: fn_error_context_must_be_used,
-  logout: fn_error_context_must_be_used,
-  signUp: fn_error_context_must_be_used,
-});
-authContext.displayName = "auth";
+refreshToken();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(usersService.getUser());
-
-  const refreshUser = () => setUser(usersService.getUser());
-
-  const login = async (credentials) => {
-    const response = await usersService.login(credentials);
-
-    refreshUser();
-
-    return response;
-  };
-
-  const logout = () => {
-    usersService.logout();
-    refreshUser();
-  };
-
-  return (
-    <authContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        signUp: usersService.createUser,
-      }}
-    >
-      {children}
-    </authContext.Provider>
-  );
+function refreshToken() {
+  setDefaultCommonHeaders("x-auth-token", getJWT());
 }
 
-export const useAuth = () => useContext(authContext);
+function setToken(token) {
+  localStorage.setItem(TOKEN_KEY, token);
+  refreshToken();
+}
+
+function getJWT() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function createUser(user) {
+  try {
+    return httpService.post("/users", user);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function login(credentials) {
+  const response = await httpService.post("users/login", credentials);
+  setToken(response.data);
+  return response;
+}
+
+export function getUser() {
+  try {
+    const token = getJWT();
+    return jwtDecode(token);
+  } catch {
+    return null;
+  }
+}
+
+export function logout() {
+  setToken(null);
+}
+
+export function getMe(userID) {
+  const token = getJWT();
+  return httpService.get(`/users/${userID}`, token);
+}
+
+export function updateUser(userId, data) {
+  return httpService.put(`/users/${userId}`, data);
+}
+
+export function getAllUsers() {
+  return httpService.get("/users");
+}
+export function getSingleUser(id) {
+  return httpService.get(`/users/${id}`);
+}
+export function deleteUser(id) {
+  return httpService.delete(`/users/${id}`);
+}
+export function editBizUser(id) {
+  return httpService.patch(`/users/${id}`);
+}
+
+const usersService = {
+  createUser,
+  login,
+  getUser,
+  logout,
+  getMe,
+  getJWT,
+  updateUser,
+  getAllUsers,
+  getSingleUser,
+  deleteUser,
+  editBizUser,
+};
+
+export default usersService;

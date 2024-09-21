@@ -1,43 +1,47 @@
 import httpService from "./httpService";
 
-// {
-//   bizName: Joi.string().min(2).max(255).required(),
-//   bizDescription: Joi.string().min(2).max(1024).required(),
-//   bizAddress: Joi.string().min(2).max(400).required(),
-//   bizPhone: Joi.string()
-//     .min(9)
-//     .max(10)
-//     .required()
-//     .regex(/^0[2-9]\d{7,8}$/),
-//   bizImage: Joi.string().min(11).max(1024)
-// }
-
-export function createCard(card) {
-  return httpService.post("/cards", card);
+export async function getCards() {
+  const response = await httpService.get("/cards");
+  const data = response.data;
+  return data;
 }
 
-export function getAll() {
-  return httpService.get("/cards");
+export async function likeCard(cardId) {
+  const response = await httpService.patch(`cards/${cardId}`);
+  const data = response.data;
+  return data;
+}
+export async function getCard(cardId) {
+  const response = await httpService.get(`cards/${cardId}`);
+  const data = response.data;
+  return data;
 }
 
-export function getCard(id) {
-  return httpService.get(`/cards/${id}`);
+export async function deleteCard(cardId, bizNumber) {
+  const response = await httpService.delete(`cards/${cardId}`, bizNumber);
+  return response;
 }
 
-export function deleteCard(id) {
-  return httpService.delete(`/cards/${id}`);
+export async function getMyCards() {
+  const response = await httpService.get("/cards/my-cards");
+  return response;
 }
-
-export function updateCard(id, card) {
-  return httpService.put(`/cards/${id}`, card);
+export async function addNewCard(data) {
+  const response = await httpService.post("/cards", data);
+  return response;
+}
+export async function editCard(cardId, data) {
+  const response = await httpService.put(`cards/${cardId}`, data);
+  return response;
 }
 
 const cardsService = {
-  createCard,
-  getAll,
+  getCards,
+  likeCard,
   getCard,
-  deleteCard,
-  updateCard,
+  getMyCards,
+  addNewCard,
+  editCard,
 };
 
 export default cardsService;

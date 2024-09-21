@@ -2,48 +2,15 @@ import Joi from "joi";
 import { useFormik } from "formik";
 import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
-import { useAuth } from "../contexts/auth.contex";
+import { useAuth } from "../contexts/auth.context";
 import { Navigate, useNavigate } from "react-router-dom";
+import { emailRegex, passwordRegex } from "../components/Regex/refgex";
+import { toast } from "react-toastify";
+import useSignIn from "../components/hooks/useSignIn";
 
 function SignIn() {
-  const { user, login } = useAuth();
-  const navigate = useNavigate();
-
-  const form = useFormik({
-    validateOnMount: true,
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validate(values) {
-      const schema = Joi.object({
-        email: Joi.string()
-          .min(6)
-          .max(255)
-          .required()
-          .email({ tlds: { allow: false } })
-          .label("Email"),
-        password: Joi.string().min(6).max(1024).required().label("Password"),
-      });
-
-      const { error } = schema.validate(values, { abortEarly: false });
-      if (!error) {
-        return null;
-      }
-
-      const errors = {};
-      for (const detail of error.details) {
-        const key = detail.path[0];
-        errors[key] = detail.message;
-      }
-      return errors;
-    },
-    async onSubmit(values) {
-      await login(values);
-
-      navigate("/my-cards");
-    },
-  });
+  const { user } = useAuth();
+  const { form } = useSignIn();
 
   if (user) {
     return <Navigate to="/" />;

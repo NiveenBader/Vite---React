@@ -1,3 +1,4 @@
+import { useAuth } from "../contexts/auth.context";
 import httpService, { setDefaultCommonHeaders } from "./httpService";
 import { jwtDecode } from "jwt-decode";
 
@@ -19,13 +20,16 @@ function getJWT() {
 }
 
 export function createUser(user) {
-  return httpService.post("/users", user);
+  try {
+    return httpService.post("/users", user);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function login(credentials) {
-  const response = await httpService.post("/auth", credentials);
-  setToken(response.data.token);
-
+  const response = await httpService.post("users/login", credentials);
+  setToken(response.data);
   return response;
 }
 
@@ -42,8 +46,26 @@ export function logout() {
   setToken(null);
 }
 
-export function getMe() {
-  return httpService.get("/users/me");
+export function getMe(userID) {
+  const token = getJWT();
+  return httpService.get(`/users/${userID}`, token);
+}
+
+export function updateUser(userId, data) {
+  return httpService.put(`/users/${userId}`, data);
+}
+
+export function getAllUsers() {
+  return httpService.get("/users");
+}
+export function getSingleUser(id) {
+  return httpService.get(`/users/${id}`);
+}
+export function deleteUser(id) {
+  return httpService.delete(`/users/${id}`);
+}
+export function editBizUser(id) {
+  return httpService.patch(`/users/${id}`);
 }
 
 const usersService = {
@@ -52,6 +74,12 @@ const usersService = {
   getUser,
   logout,
   getMe,
+  getJWT,
+  updateUser,
+  getAllUsers,
+  getSingleUser,
+  deleteUser,
+  editBizUser,
 };
 
 export default usersService;

@@ -1,22 +1,25 @@
 import Input from "../components/common/input";
 import PageHeader from "../components/common/pageHeader";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/auth.context";
-import Checkbox from "../components/common/checkbox";
-import useSignUp from "../components/hooks/useSignUp";
+import useNewCard from "../components/hooks/useNewCard";
+import { toast } from "react-toastify";
 
-function SignUp() {
-  const { user } = useAuth();
-  const { form, serverError } = useSignUp();
+function NewCard() {
+  const navigate = useNavigate();
 
-  if (user) {
-    return <Navigate to="/" />;
-  }
+  const handleCancel = () => {
+    navigate("/mycards");
+    toast.info("Action Abroted");
+  };
+  const { form, serverError } = useNewCard();
+
   return (
     <div className="container">
       <PageHeader
-        title="Sign Up"
-        description="Open a new account ,we would love to have you with us"
+        title="Add a new card"
+        description="here you can add your own cards"
       />
 
       <form
@@ -30,27 +33,28 @@ function SignUp() {
         )}
 
         <Input
-          {...form.getFieldProps("name.first")}
+          {...form.getFieldProps("title")}
           type="text"
-          label="First Name"
-          placeholder="First Name"
+          label="Title"
+          placeholder="Title"
           required
-          error={form.touched.name?.first && form.errors["name.first"]}
+          error={form.touched.title && form.errors.title}
         />
         <Input
-          {...form.getFieldProps("name.middle")}
+          {...form.getFieldProps("subtitle")}
           type="text"
-          label="Middle Name"
-          placeholder="Middle Name"
-          error={form.touched.name?.middle && form.errors["name.middle"]}
+          required
+          label="Subtitle"
+          placeholder="Subtitle"
+          error={form.touched.subtitle && form.errors.subtitle}
         />
         <Input
-          {...form.getFieldProps("name.last")}
+          {...form.getFieldProps("description")}
           type="text"
-          label="Last Name"
-          placeholder="Last Name"
+          label="Description"
+          placeholder="Description"
           required
-          error={form.touched.name?.last && form.errors["name.last"]}
+          error={form.touched.description && form.errors.description}
         />
         <Input
           {...form.getFieldProps("phone")}
@@ -68,11 +72,10 @@ function SignUp() {
           error={form.touched.email && form.errors.email}
         />
         <Input
-          {...form.getFieldProps("password")}
-          type="password"
-          label="Password"
-          required
-          error={form.touched.password && form.errors.password}
+          {...form.getFieldProps("web")}
+          type="text"
+          label="Web"
+          error={form.touched.web && form.errors.web}
         />
         <Input
           {...form.getFieldProps("image.url")}
@@ -140,23 +143,23 @@ function SignUp() {
           placeholder="zip"
           error={form.touched.address?.zip && form.errors["address.zip"]}
         />
-        <Checkbox
-          {...form.getFieldProps("isBusiness")}
-          type="checkbox"
-          label="Sign up as Business"
-        />
 
-        <div className="my-2 p-3 mt-3">
+        <div className="my-2 p-3">
           <button
             type="submit"
             disabled={!form.isValid}
-            className="btn btn-primary fs-4 "
+            className="btn btn-primary m-4"
           >
-            Sign Up
+            Add Card
+          </button>
+
+          <button className="btn btn-danger m-4" onClick={handleCancel}>
+            Cancel
           </button>
         </div>
       </form>
     </div>
   );
 }
-export default SignUp;
+
+export default NewCard;
