@@ -2,7 +2,7 @@ import Joi from "joi";
 import { useFormik } from "formik";
 import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
-import { useAuth } from "../contexts/auth.context";
+import { useAuth } from "../contexts/auth.contex";
 import { Navigate, useNavigate } from "react-router-dom";
 
 function SignIn() {

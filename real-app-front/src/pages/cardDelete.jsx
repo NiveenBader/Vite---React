@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import cardsService from "../services/cardsService";
+import cardsService from "../services/cardService";
 
 const CardDelete = () => {
   const { id } = useParams();

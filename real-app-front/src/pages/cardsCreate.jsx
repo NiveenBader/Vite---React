@@ -1,5 +1,5 @@
 import { validateFormikUsingJoi } from "../utils/validateFormikUsingJoi";
-import Input from "./common/input";
+import Input from "../components/common/input";
 import PageHeader from "../components/common/pageHeader";
 
 import { useNavigate } from "react-router-dom";

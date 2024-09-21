@@ -1,29 +1,76 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/footer";
-import Header from "./components/header";
 import About from "./pages/about";
+import Footer from "./components/footer";
 import Home from "./pages/home";
-import SignIn from "./pages/signIn";
+import NavBar from "./components/navbar";
 import SignUp from "./pages/signUp";
-import SignUpBiz from "./pages/signUpBiz";
+import SignIn from "./pages/signIn";
 import SignOut from "./pages/signOut";
+import SignUpBiz from "./pages/signUpBiz";
+import MyCards from "./pages/myCards";
+import ProtectedRoute from "./components/common/protectedRoute";
+import cardsService from "./services/cardService";
+import CardsCreate from "./pages/cardsCreate";
+import CardDelete from "./pages/cardDelete";
+import CardsEdit from "./pages/cardsEdit";
+
+cardsService.getAll().then(console.log);
 
 function App() {
   return (
-    <div className="app min-vh-100 d-flex flex-column gap-2">
-      <Header />
-      <main className="flex-fill">
+    <div className="app d-flex flex-column min-vh-100">
+      <header className="pb-3">
+        <NavBar />
+      </header>
+      <main className="flex-fill container">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-up-biz" element={<SignUpBiz />} />
-          <Route path="/sign-out" element={<SignOut />} />
+          <Route
+            path="/my-cards"
+            element={
+              <ProtectedRoute onlyBiz>
+                <MyCards />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-card"
+            element={
+              <ProtectedRoute onlyBiz>
+                <CardsCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-cards/delete/:id"
+            element={
+              <ProtectedRoute onlyBiz>
+                <CardDelete />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-cards/edit/:id"
+            element={
+              <ProtectedRoute onlyBiz>
+                <CardsEdit />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/sign-in" element={<SignIn redirect="/" />} />
+          <Route path="/sign-up" element={<SignUp redirect="/sign-in" />} />
+          <Route
+            path="/sign-up-biz"
+            element={<SignUpBiz redirect="/my-cards" />}
+          />
+          <Route path="/sign-out" element={<SignOut />} redirect="/" />
         </Routes>
       </main>
-      <Footer />
+      <footer>
+        <Footer />
+      </footer>
     </div>
   );
 }

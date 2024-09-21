@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import cardsService from "../services/cardsService";
+import cardsService from "../services/cardService";
 
 export const useCard = (id) => {
   const [card, setCard] = useState(null);
