@@ -46,7 +46,7 @@ function NavBar() {
   };
   return (
     <nav
-      className="navbar navbar-expand-sm navbar-light fixed-top bg-success shadow-sm fs-4 fw-bold"
+      className="navbar navbar-expand-sm navbar-light fixed-top bg-primary  shadow-sm fs-4 fw-bold"
       aria-label="Fifth navbar example"
     >
       <div className="container ">
@@ -110,7 +110,7 @@ function NavBar() {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-4 ">
             <button
               onClick={handleToggle}
-              className="border-0 bg-success mt-2  "
+              className="border-0 bg-primary mt-2  "
               style={{ width: 50 }}
             >
               {theme === "dark" ? (

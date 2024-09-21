@@ -1,7 +1,7 @@
 function Logo() {
   return (
     <span>
-      Card<i className="bi bi-geo-fill fs-3"></i>4U
+      Cards<i className="bi bi-geo-fill fs-3"></i>App
     </span>
   );
 }

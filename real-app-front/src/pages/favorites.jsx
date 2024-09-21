@@ -1,188 +1,96 @@
-import Input from "../components/common/input";
+import Card from "./card";
+import { useEffect, useState } from "react";
 import PageHeader from "../components/common/pageHeader";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
-import { getCard } from "../services/cardService";
-import useEditCard from "../components/hooks/useEditCard";
-function EditCard() {
-  const navigate = useNavigate();
-  const [fetchedCard, setfetchedCard] = useState({});
-  const { id } = useParams();
+import { getCards } from "../services/cardService";
+import { useAuth } from "../contexts/auth.context";
+import { useSearch } from "../contexts/search.context";
+import usePagination from "../components/hooks/usePagination";
+import Pagination from "../components/common/pagination";
 
-  const { form, serverError } = useEditCard();
+function Favorites() {
+  const { user } = useAuth();
+  const [cards, setCards] = useState([]);
+  const { search } = useSearch();
+  const {
+    setCurrentPAge,
+    cardPerPage,
+    currentPage,
+    firstCardIndex,
+    lastCardIndex,
+  } = usePagination();
+
+  const currentCardsFilterd = cards.filter((card) =>
+    card.likes.includes(user?._id)
+  );
+  const currentCards = currentCardsFilterd.slice(firstCardIndex, lastCardIndex);
 
   useEffect(() => {
-    const fetchCard = async () => {
+    const fetchCards = async () => {
       try {
-        const data = await getCard(id);
-        setfetchedCard(data);
-        form.setValues({
-          title: data.title || "",
-          subtitle: data.subtitle || "",
-          description: data.description || "",
-          phone: data.phone || "",
-          email: data.email || "",
-
-          image: {
-            url: data.image?.url || "",
-            alt: data.image?.alt || "",
-          },
-          address: {
-            state: data.address?.state || "",
-            country: data.address?.country || "",
-            city: data.address?.city || "",
-            street: data.address?.street || "",
-            houseNumber: data.address?.houseNumber || "",
-            zip: data.address?.zip || "",
-          },
-        });
+        const data = await getCards();
+        setCards(data);
       } catch (error) {
-        console.log("error fetching card", error);
-        if (error.response?.status === 400) {
-          setServerError(error.response.data);
-        }
+        console.error("error fetching cards ", error);
       }
     };
-    fetchCard();
-  }, [id]);
-  const handleCancel = () => {
-    navigate(-1);
-    toast.info("Action Cancelled");
+    fetchCards();
+  }, []);
+
+  const handleCardRemoval = (cardId) => {
+    setCards((prevCards) => {
+      const updatedCards = prevCards.filter((card) => card._id !== cardId);
+
+      const totalFilteredCards = updatedCards.filter((card) =>
+        card.likes.includes(user._id)
+      ).length;
+      const totalPages = Math.ceil(totalFilteredCards / cardPerPage);
+
+      if (currentPage > totalPages) {
+        setCurrentPAge(totalPages);
+      }
+
+      return updatedCards;
+    });
   };
   return (
-    <div className="container">
-      <PageHeader title="Edit Card" />
-      {serverError && <div className="alert alert-danger">{serverError}</div>}
-      <form
-        onSubmit={form.handleSubmit}
-        className="d-flex flex-wrap gap-5 m-5 text-justify "
-        noValidate
-        autoComplete="off"
-      >
-        <Input
-          {...form.getFieldProps("title")}
-          type="text"
-          label="Title"
-          placeholder="Title"
-          required
-          error={form.touched.title && form.errors.title}
-        />
-        <Input
-          {...form.getFieldProps("subtitle")}
-          type="text"
-          required
-          label="Subtitle"
-          placeholder="Subtitle"
-          error={form.touched.subtitle && form.errors.subtitle}
-        />
-        <Input
-          {...form.getFieldProps("description")}
-          type="text"
-          label="Description"
-          placeholder="Description"
-          required
-          error={form.touched.description && form.errors.description}
-        />
-        <Input
-          {...form.getFieldProps("phone")}
-          type="text"
-          label="Phone"
-          required
-          error={form.touched.phone && form.errors.phone}
-        />
-        <Input
-          {...form.getFieldProps("email")}
-          type="email"
-          label="Email"
-          placeholder="john@doe.com"
-          required
-          error={form.touched.email && form.errors.email}
-        />
-        <Input {...form.getFieldProps("web")} type="text" label="Web" />
-        <Input
-          {...form.getFieldProps("image.url")}
-          type="text"
-          label="Image url"
-          placeholder="Image url"
-          error={form.touched.image?.url && form.errors["image.url"]}
-        />
-        <Input
-          {...form.getFieldProps("image.alt")}
-          type="text"
-          label="Image alt"
-          placeholder="Image alt"
-          error={form.touched.image?.alt && form.errors["image.alt"]}
-        />
-        <Input
-          {...form.getFieldProps("address.state")}
-          type="text"
-          label="state"
-          placeholder="state"
-          error={form.touched.address?.state && form.errors["address.state"]}
-        />
-        <Input
-          {...form.getFieldProps("address.country")}
-          type="text"
-          label="country"
-          required
-          placeholder="country"
-          error={
-            form.touched.address?.country && form.errors["address.country"]
-          }
-        />
-        <Input
-          {...form.getFieldProps("address.city")}
-          type="text"
-          label="city"
-          required
-          placeholder="city"
-          error={form.touched.address?.city && form.errors["address.city"]}
-        />
-        <Input
-          {...form.getFieldProps("address.street")}
-          type="text"
-          label="street"
-          required
-          placeholder="street"
-          error={form.touched.address?.street && form.errors["address.street"]}
-        />
-        <Input
-          {...form.getFieldProps("address.houseNumber")}
-          type="number"
-          label="house number"
-          required
-          placeholder="house number"
-          error={
-            form.touched.address?.houseNumber &&
-            form.errors["address.houseNumber"]
-          }
-        />
-        <Input
-          {...form.getFieldProps("address.zip")}
-          type="number"
-          label="zip"
-          required
-          placeholder="zip"
-          error={form.touched.address?.zip && form.errors["address.zip"]}
-        />
+    <div className="container ">
+      <PageHeader
+        title="Favorite Cards"
+        description="Here are your favorite business cards"
+      />
 
-        <div className="my-2 p-3">
-          <button type="submit" className="btn btn-success m-3 fs-4">
-            Submit
-          </button>
-
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="btn btn-danger m-3 fs-4"
-          >
-            Cancel
-          </button>
+      {currentCards.length === 0 && (
+        <div>
+          <p className="fs-4"> There are no favorite cards you liked </p>
         </div>
-      </form>
+      )}
+
+      {currentCards.length > 0 && (
+        <div className="d-flex w-70 justify-center m-auto gap-5 mb-5 flex-wrap">
+          {currentCards
+            .filter((card) =>
+              card.title.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((card) => (
+              <Card
+                card={card}
+                key={card._id}
+                onUnlike={handleCardRemoval}
+                onDelete={handleCardRemoval}
+              />
+            ))}
+        </div>
+      )}
+      {currentCards.length > 0 && (
+        <Pagination
+          totalCards={currentCardsFilterd.length}
+          cardsPerPage={cardPerPage}
+          setCurrentPAge={setCurrentPAge}
+          currentPage={currentPage}
+        />
+      )}
     </div>
   );
 }
-export default EditCard;
+
+export default Favorites;

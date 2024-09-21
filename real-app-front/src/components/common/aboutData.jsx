@@ -2,10 +2,7 @@ function AboutData() {
   return (
     <div className="mt-3">
       <p className="fs-5">
-        Welcome to my platform! I’m Ala Sharkia, the creator of this project.
-        This site is designed to provide a seamless and intuitive experience for
-        users to manage their accounts and interact with our services
-        effectively.
+        Welcome to my platform! I’m Neveen Bader, the creator of this project.
       </p>
 
       <h2> Project Overview</h2>
