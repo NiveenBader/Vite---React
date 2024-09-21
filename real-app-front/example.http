@@ -1,27 +1,27 @@
-@local=http://localhost:3900
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTNmZWE4OWVkYTA3OTI2NDk3ZjNmZTUiLCJiaXoiOnRydWUsImlhdCI6MTY5ODY4NzYyNX0.dkxx8EyMhdnszR5RqjsRHUtBcWoyP7a0a1Kj6hcVAd0
+@local=http://localhost:3900/Api 
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmVhYWQ1ZTNhYjE4MmE3OTBiMjVjNTEiLCJiaXoiOnRydWUsImlhdCI6MTcyNjY1NjM5NX0.GcOr1XfMg1_sUFXWm1ARfAaw0lowJgGNhvJQZ9wrLeY
 
-### Register
-POST {{local}}/api/users
+###
+POST {{local}}/users
 Content-Type: application/json
 
 {
-    "name": "Daniel", 
-    "email": "d@gmail.com", 
-    "password": "Aa123456",
-    "biz": true
+    "name":"neveen",
+    "email":"neveen@gmail.com",
+    "password":"Aa123456789",
+    "biz":true
 }
 
-### Authentication (login)
-POST {{local}}/api/auth
+### Authenticate
+POST {{local}}/auth 
 Content-Type: application/json
 
 {
-    "email": "d@gmail.com", 
-    "password": "Aa123456"
+    "email":"neveen@gmail.com",
+    "password":"Aa123456789"
 }
 
-### Athurization
+#### Athurization
 GET {{local}}/api/users/me
 x-auth-token: {{token}}
 
