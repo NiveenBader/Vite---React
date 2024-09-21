@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import PageHeader from "../components/common/pageHeader";
 import Logo from "../components/logo";
-import { getCards } from "../services/cardsService";
+import { getCards } from "../services/cardService";
 import Card from "./card";
 import { useSearch } from "../contexts/search.context";
 import { Link } from "react-router-dom";

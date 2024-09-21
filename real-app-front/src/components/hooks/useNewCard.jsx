@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import Joi from "joi";
-import { addNewCard } from "../../services/cardsService";
+import { addNewCard } from "../../services/cardService";
 import { emailRegex, phoneRegex, webRegex } from "../Regex/refgex";
 import { toast } from "react-toastify";
 import { useState } from "react";

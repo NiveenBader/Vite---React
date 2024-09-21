@@ -1,7 +1,7 @@
 import { useState } from "react";
 import schemaDataCard from "../common/schemaDataCard";
 import { useFormik } from "formik";
-import { editCard } from "../../services/cardsService";
+import { editCard } from "../../services/cardService";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearch } from "../contexts/search.context";
-import { getCards } from "../services/cardsService";
+import { getCards } from "../services/cardService";
 import { useAuth } from "../contexts/auth.context";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/common/pagination";

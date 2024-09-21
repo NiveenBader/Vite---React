@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/auth.context";
-import { likeCard } from "../services/cardsService";
+import { likeCard } from "../services/cardService";
 import useTools from "../components/hooks/useTools";
-import { deleteCard } from "../services/cardsService";
+import { deleteCard } from "../services/cardService";
 import { toast } from "react-toastify";
 
 function Card({

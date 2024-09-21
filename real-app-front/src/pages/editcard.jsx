@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import { getCard } from "../services/cardsService";
+import { getCard } from "../services/cardService";
 import useEditCard from "../components/hooks/useEditCard";
 function EditCard() {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCard } from "../services/cardsService";
+import { getCard } from "../services/cardService";
 import { useAuth } from "../contexts/auth.context";
 import useTools from "../components/hooks/useTools";
-import { deleteCard } from "../services/cardsService";
+import { deleteCard } from "../services/cardService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSearch } from "../contexts/search.context";
-import { getMyCards } from "../services/cardsService";
+import { getMyCards } from "../services/cardService";
 import { useState, useEffect } from "react";
 import Card from "./card";
 import { toast } from "react-toastify";
