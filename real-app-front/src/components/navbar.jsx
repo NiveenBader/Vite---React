@@ -1,7 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import Logo from "./logo";
+import { useAuth } from "../contexts/auth.contex";
 
 function NavBar() {
+  const { user } = useAuth();
+
   return (
     <nav
       className="navbar navbar-expand-sm navbar-light bg-light shadow-sm"
@@ -38,16 +41,31 @@ function NavBar() {
           </ul>
 
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <NavLink to="/sign-in" className="nav-link">
-                Sign In
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/sign-up" className="nav-link">
-                Sign Up
-              </NavLink>
-            </li>
+            {user ? (
+              <li className="nav-item">
+                <NavLink to="/sign-out" className="nav-link">
+                  Sign Out
+                </NavLink>
+              </li>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <NavLink to="/sign-in" className="nav-link">
+                    Sign In
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/sign-up" className="nav-link">
+                    Sign Up
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/sign-up-biz" className="nav-link">
+                    Sign Up Biz
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

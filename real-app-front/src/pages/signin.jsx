@@ -2,8 +2,13 @@ import Joi from "joi";
 import { useFormik } from "formik";
 import PageHeader from "../components/common/pageHeader";
 import Input from "../components/common/input";
+import { useAuth } from "../contexts/auth.context";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+
   const form = useFormik({
     validateOnMount: true,
     initialValues: {
@@ -33,10 +38,16 @@ function SignIn() {
       }
       return errors;
     },
-    onSubmit(values) {
-      console.log(values);
+    async onSubmit(values) {
+      await login(values);
+
+      navigate("/my-cards");
     },
   });
+
+  if (user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="container">

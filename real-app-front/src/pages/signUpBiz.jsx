@@ -9,11 +9,11 @@ import Joi from "joi";
 import { useState } from "react";
 import { useAuth } from "../contexts/auth.contex";
 
-const SignUp = ({ redirect }) => {
+const SignUpBiz = ({ redirect }) => {
   const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
-  const { signUp, user } = useAuth();
+  const { signUp, user, login } = useAuth();
 
   const form = useFormik({
     validateOnMount: true,
@@ -33,7 +33,9 @@ const SignUp = ({ redirect }) => {
     }),
     async onSubmit(values) {
       try {
-        await signUp({ ...values, biz: false });
+        await signUp({ ...values, biz: true });
+        await login({ email: values.email, password: values.password });
+
         if (redirect) {
           navigate(redirect);
         }
@@ -52,8 +54,8 @@ const SignUp = ({ redirect }) => {
   return (
     <>
       <PageHeader
-        title="Sign Up"
-        description="Open a new account now!!! It is free you yammani!!"
+        title="Sign Up Biz"
+        description="Open a new business account now!!! It is free you yammani!!"
       />
 
       <form onSubmit={form.handleSubmit}>
@@ -91,4 +93,4 @@ const SignUp = ({ redirect }) => {
   );
 };
 
-export default SignUp;
+export default SignUpBiz;

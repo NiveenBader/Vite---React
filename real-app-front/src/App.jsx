@@ -4,8 +4,10 @@ import Footer from "./components/footer";
 import Header from "./components/header";
 import About from "./pages/about";
 import Home from "./pages/home";
-import SignIn from "./pages/signin";
-import SignUp from "./pages/signup";
+import SignIn from "./pages/signIn";
+import SignUp from "./pages/signUp";
+import SignUpBiz from "./pages/signUpBiz";
+import SignOut from "./pages/signOut";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/sign-up-biz" element={<SignUpBiz />} />
+          <Route path="/sign-out" element={<SignOut />} />
         </Routes>
       </main>
       <Footer />
